@@ -152,3 +152,73 @@ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
     min-height: 36px;
   }
 }
+/* Улучшенная ширина колонок прайса */
+.price-group table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.price-group th,
+.price-group td {
+  box-sizing: border-box;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.price-group th:nth-child(1),
+.price-group td:nth-child(1) { width: 60%; }
+
+.price-group th:nth-child(2),
+.price-group td:nth-child(2) { width: 10%; }
+
+.price-group th:nth-child(3),
+.price-group td:nth-child(3) { width: 15%; }
+
+.price-group th:nth-child(4),
+.price-group td:nth-child(4) { width: 15%; }
+
+.price-group td:first-child {
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.price-group .qty-input {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .price-group th,
+  .price-group td {
+    padding: 9px 6px;
+    font-size: .84rem;
+  }
+
+  .price-group th:nth-child(1),
+  .price-group td:nth-child(1) { width: 48%; }
+
+  .price-group th:nth-child(2),
+  .price-group td:nth-child(2) { width: 12%; }
+
+  .price-group th:nth-child(3),
+  .price-group td:nth-child(3) { width: 20%; }
+
+  .price-group th:nth-child(4),
+  .price-group td:nth-child(4) { width: 20%; }
+
+  .price-group td:first-child {
+    line-height: 1.4;
+    font-size: .86rem;
+  }
+
+  .price-group td.price {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .price-group .qty-input {
+    width: 100%;
+    min-width: 0;
+    padding: 6px 3px;
+  }
+}
