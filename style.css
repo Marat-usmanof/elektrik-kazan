@@ -222,3 +222,44 @@ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vie
     padding: 6px 3px;
   }
 }
+/* Горизонтальная прокрутка таблицы на телефонах */
+.price-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg);
+}
+
+.price-table-scroll table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+@media (max-width: 600px) {
+  .price-table-scroll table {
+    width: 650px;
+    min-width: 650px;
+  }
+
+  .price-table-scroll th:nth-child(1),
+  .price-table-scroll td:nth-child(1) {
+    width: 360px;
+  }
+
+  .price-table-scroll th:nth-child(2),
+  .price-table-scroll td:nth-child(2) {
+    width: 75px;
+  }
+
+  .price-table-scroll th:nth-child(3),
+  .price-table-scroll td:nth-child(3) {
+    width: 100px;
+  }
+
+  .price-table-scroll th:nth-child(4),
+  .price-table-scroll td:nth-child(4) {
+    width: 115px;
+  }
+}
