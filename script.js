@@ -52,10 +52,10 @@ function render(q){
         : `<span style="color:var(--muted);font-size:.85rem">по запросу</span>`;
 
       html += `<tr>
-        <td>${o.it[0]}</td>
-        <td>${o.it[1]}</td>
-        <td class="price">${fmtPrice(o.it[2])}</td>
-        <td class="qty-cell">${qtyCell}</td>
+        <td data-label="Работа">${o.it[0]}</td>
+        <td data-label="Ед. изм.">${o.it[1]}</td>
+        <td class="price" data-label="Цена">${fmtPrice(o.it[2])}</td>
+        <td class="qty-cell" data-label="Кол-во">${qtyCell}</td>
       </tr>`;
     });
 
