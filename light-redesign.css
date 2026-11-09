@@ -1,0 +1,40 @@
+/* Светлая тема и современная адаптация */
+:root{--bg:#f7f9fb;--bg2:#eef2f5;--card:#fff;--accent:#efb51b;--accent2:#c18a08;--text:#172633;--muted:#687582;--line:#e1e7ec;--radius:16px}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{background:#fff;color:#172633;font-family:Manrope,"Segoe UI",Arial,sans-serif}
+.header{background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid #e5e9ed;box-shadow:0 5px 20px rgba(20,40,55,.04)}
+.logo{color:#172633}.nav a{color:#65727e}.nav a:hover{color:#a97800}.header__phone{color:#172633}
+.hero{background:linear-gradient(120deg,#f7f9fb 0%,#edf1f4 100%);padding:76px 0 62px}
+.hero__inner{grid-template-columns:1.5fr .85fr;gap:55px}
+h1{font-size:clamp(2.2rem,5vw,3.65rem);letter-spacing:-.045em;color:#172633}
+.hero__sub{color:#64717d}.hero__badges span{background:#fff;border:1px solid #e1e7ec;color:#47545f}
+.hero__card,.card{background:#fff;border:1px solid #e4e9ed;box-shadow:0 12px 34px rgba(20,40,55,.055)}
+.hero__card h3,.card h3{color:#a97800}.hero__card .phone{color:#172633}
+.btn{border:1px solid #dce3e8;background:#fff;color:#172633;border-radius:9px}
+.btn--primary{background:#f5b91d;border-color:#f5b91d;color:#20252a}
+.section--alt{background:#f5f7f9}.section--dark{background:#172633}
+.section h2{color:#172633}.section__sub{color:#687582}
+.card{border-radius:14px;transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(20,40,55,.09);border-color:#e5c66d}
+.card p{color:#687582}.price-group{background:#fff;border-color:#e1e7ec}.price-group h3{background:#fff8e7;color:#8c6507;border-color:#e1e7ec}
+th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d}
+#priceSearch{background:#fff;border-color:#dce3e8;color:#172633;max-width:620px}
+.qty-input{width:78px;padding:8px;border:1px solid #dce3e8;border-radius:7px;background:#fff;color:#172633}
+.calc-panel{background:#172633;border:1px solid #253746;border-radius:14px;padding:20px;margin-top:20px;box-shadow:0 12px 28px rgba(20,40,55,.08)}
+.calc-panel__row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.calc-total{color:#fff}.calc-total strong{color:#ffd15a;font-size:1.5rem}
+.calc-btns{display:flex;gap:8px;flex-wrap:wrap}.calc-btns .btn{font-size:.85rem;padding:10px 14px}
+.calc-btns .btn:not(.btn--primary){background:transparent;color:#fff;border-color:#62717d}
+.price-note{color:#788590}
+.gallery-grid figure{border-color:#e1e7ec;border-radius:12px;box-shadow:0 4px 14px rgba(20,40,55,.04)}
+.contact__big{color:#ffd15a}.contact__name{color:#fff}.contact__inner{gap:50px}
+.footer{background:#111d27;color:#b5c0c8}
+.header__inner{min-height:68px}
+.price-group h3{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}
+.price-group h3:after{content:"+";font-size:18px;color:#a97800}.price-group.open h3:after{content:"−"}
+.price-group-count{font-size:10px;color:#89949e;font-weight:500;margin-left:auto}
+.price-table-scroll[hidden]{display:none!important}
+.not-calculated,.empty-result{color:#84909a;font-size:12px}
+.print-sheet{display:none}
+@media(max-width:800px){.hero{padding:48px 0}.hero__inner{grid-template-columns:1fr;gap:28px}h1{font-size:2.15rem}.section{padding:48px 0}.contact__big{font-size:1.55rem}.calc-panel__row{align-items:flex-start}.calc-btns{width:100%}.calc-btns .btn{flex:1}}
+@media(max-width:560px){.nav{width:100%;justify-content:space-between;gap:8px}.nav a{font-size:.78rem}.header__inner{gap:10px}.header__phone{font-size:.8rem}.hero__badges{gap:7px}.hero__badges span{font-size:.75rem;padding:5px 9px}.cards{grid-template-columns:1fr}.calc-btns .btn{flex-basis:100%}}
+@media print{body>*:not(.print-sheet){display:none!important}.print-sheet{display:block!important;padding:24px;color:#111;font:12px Arial,sans-serif}.print-sheet h1{font-size:24px;margin:0 0 8px}.print-sheet table{width:100%;border-collapse:collapse;margin:15px 0}.print-sheet td,.print-sheet th{padding:8px;border-bottom:1px solid #ddd;text-align:left}.print-sheet>strong{display:block;font-size:18px;margin:18px 0}.print-sheet small{color:#555}}
