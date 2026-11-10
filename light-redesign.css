@@ -54,3 +54,14 @@ th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d
 }
 @media(max-width:560px){.nav{width:100%;justify-content:space-between;gap:8px}.nav a{font-size:.78rem}.header__inner{gap:10px}.header__phone{font-size:.8rem}.hero__badges{gap:7px}.hero__badges span{font-size:.75rem;padding:5px 9px}.cards{grid-template-columns:1fr}}
 @media print{body>*:not(.print-sheet){display:none!important}.print-sheet{display:block!important;padding:24px;color:#111;font:12px Arial,sans-serif}.print-sheet h1{font-size:24px;margin:0 0 8px}.print-sheet table{width:100%;border-collapse:collapse;margin:15px 0}.print-sheet td,.print-sheet th{padding:8px;border-bottom:1px solid #ddd;text-align:left}.print-sheet>strong{display:block;font-size:18px;margin:18px 0}.print-sheet small{color:#555}}
+
+/* Компактный блок «Связаться со мной» на телефонах */
+@media(max-width:600px){
+  .hero{padding:32px 0 28px}
+  .hero__inner{gap:18px}
+  .hero__card{padding:14px 16px;border-radius:14px;box-shadow:0 6px 18px rgba(20,40,55,.06)}
+  .hero__card h3{font-size:1rem;margin:0 0 4px}
+  .hero__card p{margin:0;font-size:.88rem;line-height:1.4}
+  .hero__card .phone{font-size:1.35rem;margin:2px 0 6px}
+  .hero__card .note{font-size:.8rem;margin-top:4px}
+}
