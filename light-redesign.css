@@ -65,3 +65,22 @@ th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d
   .hero__card .phone{font-size:1.35rem;margin:2px 0 6px}
   .hero__card .note{font-size:.8rem;margin-top:4px}
 }
+
+/* Раздел «Услуги»: названия-кнопки, описание по нажатию */
+.section--compact{padding:36px 0}
+.section--compact h2{margin-bottom:14px}
+.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+.service{background:#fff;border:1px solid #e4e9ed;border-radius:12px;box-shadow:0 4px 14px rgba(20,40,55,.04);transition:border-color .2s,box-shadow .2s}
+.service:hover,.service[open]{border-color:#e5c66d}
+.service[open]{box-shadow:0 8px 22px rgba(20,40,55,.08)}
+.service summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;font-weight:700;font-size:.95rem;color:#172633;-webkit-tap-highlight-color:transparent}
+.service summary::-webkit-details-marker{display:none}
+.service summary::after{content:"+";font-size:20px;line-height:1;color:#a97800;flex:none}
+.service[open] summary::after{content:"−"}
+.service p{margin:0;padding:0 16px 14px;font-size:.88rem;line-height:1.5;color:#687582}
+@media(max-width:800px){
+  .section--compact{padding:28px 0}
+  .services-grid{grid-template-columns:1fr;gap:8px}
+  .service summary{padding:11px 14px;font-size:.92rem}
+  .service p{padding:0 14px 12px;font-size:.85rem}
+}
