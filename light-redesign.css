@@ -99,19 +99,41 @@ th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d
 /* Заголовок: первая строка всегда в одну линию */
 .h1-line{white-space:nowrap}
 
-/* Фото в шапке сайта */
-.hero__side{display:flex;flex-direction:column;gap:14px}
-.hero__photo{display:block;width:100%;height:auto;border-radius:14px;box-shadow:0 12px 34px rgba(20,40,55,.12)}
-
-@media(max-width:800px){
-  h1{font-size:clamp(1.2rem,6.3vw,2.4rem);margin-bottom:10px}
-  .hero__side{display:contents}
-  .hero__photo{order:-1;aspect-ratio:16/9;object-fit:cover;object-position:50% 0}
-}
 @media(max-width:600px){
   .header__inner{overflow:visible!important;padding:6px 12px}
   .logo{font-size:.9rem}
   .header__phone .phone-text{display:none}
   .header__phone{font-size:1.25rem;padding:2px 6px;line-height:1}
   .menu__btn{padding:7px 11px;font-size:.85rem}
+}
+
+/* ===== Шапка: фото на фоне, текст поверх ===== */
+.hero{background:#f4f7f9 url("hero-bg.jpg") right center/cover no-repeat;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#f4f7f9 0%,rgba(244,247,249,.95) 34%,rgba(244,247,249,.55) 48%,rgba(244,247,249,0) 62%)}
+.hero::after{display:none}
+.hero__inner{position:relative;z-index:1;display:block}
+.hero__text{max-width:540px}
+.hero__card{max-width:500px;margin-top:20px;padding:12px 18px;display:grid;grid-template-columns:auto 1fr;gap:2px 18px;align-items:center}
+.hero__card h3,.hero__card > p:first-of-type{display:none}
+.hero__card .phone{grid-row:1/3;margin:0;font-size:1.45rem}
+.hero__card p{margin:0;font-size:.88rem;line-height:1.4}
+.hero__card .note{margin:0;font-size:.8rem}
+.hero{padding:52px 0 44px}
+
+@media(max-width:800px){
+  .hero{background:#f4f7f9;padding:0 0 26px}
+  .hero::before{inset:0 0 auto 0;height:min(118vw,620px);
+    background:url("hero-bg-mobile.jpg") center top/cover no-repeat;
+    -webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+  h1{font-size:clamp(1.2rem,6.3vw,2.4rem)}
+  .hero__text{max-width:none}
+  .hero__actions{flex-wrap:nowrap;gap:10px}
+  .hero__actions .btn{flex:1 1 0;min-width:0;text-align:center;padding:12px 8px;white-space:nowrap}
+  .hero__title{padding-top:22px;min-height:min(110vw,570px)}
+  .hero__title h1{text-shadow:0 0 16px rgba(255,255,255,.85),0 0 4px rgba(255,255,255,.7);margin:0}
+  .hero__card{max-width:none;margin-top:16px;display:block;padding:14px 16px}
+  .hero__card h3,.hero__card > p:first-of-type{display:block}
+  .hero__card .phone{margin:2px 0 6px;font-size:1.35rem}
+  .hero{padding:0 0 26px}
 }
