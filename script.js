@@ -153,7 +153,8 @@ function initCalculator() {
 
   const mailButton = document.getElementById("calcMail");
   if (mailButton) {
-    mailButton.textContent = "Отправить расчёт в WhatsApp ↗";
+    mailButton.textContent = "💬 WhatsApp";
+    mailButton.title = "Отправить расчёт в WhatsApp";
     mailButton.addEventListener("click", () => {
       if (!totals().count) { alert("Сначала выберите работы."); return; }
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(buildQuote())}`, "_blank", "noopener");
@@ -165,7 +166,8 @@ function initCalculator() {
     print.type = "button";
     print.id = "calcPrint";
     print.className = "btn btn--sm";
-    print.textContent = "Скачать / распечатать смету";
+    print.textContent = "🖨 Смета";
+    print.title = "Скачать / распечатать смету";
     print.addEventListener("click", printQuote);
     controls.insertBefore(print, controls.children[1] || null);
   } else {
