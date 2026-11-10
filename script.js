@@ -17,7 +17,7 @@ function parsePrice(value) {
   return { value: Number(match[0].replace(",", ".")), from: /от|–|-/i.test(text) };
 }
 function money(value) {
-  return Number(value || 0).toLocaleString("ru-RU") + " ₽";
+  return Number(value || 0).toLocaleString("ru-RU") + "\u00A0₽";
 }
 function safe(value) {
   return String(value).replace(/[&<>"']/g, ch => ({

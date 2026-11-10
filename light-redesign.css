@@ -147,3 +147,11 @@ th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d
   .price-group h3{padding:9px 12px;font-size:.92rem;gap:8px}
   .price-group h3:after{font-size:17px}
 }
+
+/* Печать сметы: цифры и знак ₽ не переносятся */
+@media print{
+  .print-sheet table{table-layout:auto}
+  .print-sheet td:nth-child(n+2),.print-sheet th:nth-child(n+2){white-space:nowrap}
+  .print-sheet td:nth-child(n+3),.print-sheet th:nth-child(n+3){text-align:right}
+  .print-sheet td:first-child,.print-sheet th:first-child{width:100%}
+}
