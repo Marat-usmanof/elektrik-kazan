@@ -147,6 +147,139 @@ function printQuote() {
     (t.unpriced ? " · часть работ рассчитывается отдельно" : "");
   window.print();
 }
+
+/* ===== PDF-смета: создаётся прямо в браузере и отправляется через «Поделиться» ===== */
+function pdfPages() {
+  const t = totals();
+  const W = 1240, H = 1754, M = 90;               // A4, ~150 dpi
+  const FONT = '"Segoe UI", Roboto, Arial, sans-serif';
+  const X = { qty: 630, price: 950, sum: W - M, nameW: 500 };
+  const pages = [];
+  let canvas, ctx, y;
+
+  function wrap(text, maxW) {
+    const words = String(text).split(/\s+/), lines = [];
+    let line = "";
+    words.forEach(word => {
+      const test = line ? line + " " + word : word;
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = word; }
+      else line = test;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  function head() {
+    ctx.fillStyle = "#87939d";
+    ctx.font = "bold 20px " + FONT;
+    ctx.textAlign = "left";  ctx.fillText("РАБОТА", M, y);
+    ctx.fillText("КОЛ-ВО", X.qty, y);
+    ctx.textAlign = "right"; ctx.fillText("ЦЕНА", X.price, y); ctx.fillText("СУММА", X.sum, y);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#c9d1d8"; ctx.fillRect(M, y + 14, W - 2 * M, 2);
+    y += 48;
+  }
+  function newPage(first) {
+    canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+    y = M + 30;
+    if (first) {
+      ctx.fillStyle = "#172633"; ctx.font = "bold 46px " + FONT;
+      ctx.fillText("Предварительная смета", M, y); y += 44;
+      ctx.fillStyle = "#4f5d68"; ctx.font = "26px " + FONT;
+      ctx.fillText("Электромонтажные работы · Марат Усманов · " + displayPhone, M, y); y += 36;
+      ctx.fillText("Дата: " + new Date().toLocaleDateString("ru-RU"), M, y); y += 56;
+    }
+    head();
+    pages.push(canvas);
+  }
+
+  newPage(true);
+  t.rows.forEach(({ item, qty, parsed }) => {
+    ctx.font = "24px " + FONT;
+    const lines = wrap(item[0], X.nameW);
+    const rowH = lines.length * 32 + 24;
+    if (y + rowH > H - M - 220) newPage(false);
+    ctx.font = "24px " + FONT;
+    ctx.fillStyle = "#172633";
+    lines.forEach((ln, i) => ctx.fillText(ln, M, y + i * 32));
+    ctx.fillText(qty + " " + item[1], X.qty, y);
+    ctx.textAlign = "right";
+    ctx.fillText(parsed ? (parsed.from ? "от " : "") + money(parsed.value) : "по запросу", X.price, y);
+    ctx.font = "bold 24px " + FONT;
+    ctx.fillText(parsed ? (parsed.from ? "от " : "") + money(parsed.value * qty) : "уточняется", X.sum, y);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#edf0f2"; ctx.fillRect(M, y + rowH - 26, W - 2 * M, 2);
+    y += rowH;
+  });
+
+  if (y > H - M - 200) newPage(false);
+  y += 30;
+  ctx.fillStyle = "#172633"; ctx.font = "bold 36px " + FONT;
+  ctx.fillText("Предварительный итог: " + (t.hasFrom ? "от " : "") + money(t.sum), M, y); y += 44;
+  ctx.font = "24px " + FONT; ctx.fillStyle = "#4f5d68";
+  if (t.unpriced) { ctx.fillText("Часть работ рассчитывается отдельно.", M, y); y += 34; }
+  ctx.fillText("Минимальный заказ: 2 000 ₽", M, y); y += 44;
+  ctx.font = "22px " + FONT; ctx.fillStyle = "#788590";
+  wrap("Расчёт предварительный. Точная стоимость согласуется после уточнения условий объекта.", W - 2 * M)
+    .forEach(ln => { ctx.fillText(ln, M, y); y += 30; });
+
+  return pages.map(c => {
+    const bin = atob(c.toDataURL("image/jpeg", 0.92).split(",")[1]);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return { jpg: bytes, w: c.width, h: c.height };
+  });
+}
+function buildPdf(pages) {
+  const enc = new TextEncoder(), chunks = [], offsets = [];
+  let len = 0;
+  const push = d => { const u = typeof d === "string" ? enc.encode(d) : d; chunks.push(u); len += u.length; };
+  const obj = (id, body) => { offsets[id] = len; push(`${id} 0 obj\n${body}\nendobj\n`); };
+  const n = pages.length;
+  push("%PDF-1.4\n");
+  obj(1, "<< /Type /Catalog /Pages 2 0 R >>");
+  obj(2, `<< /Type /Pages /Kids [${pages.map((_, i) => (3 + 3 * i) + " 0 R").join(" ")}] /Count ${n} >>`);
+  pages.forEach((p, i) => {
+    const pid = 3 + 3 * i, cid = pid + 1, iid = pid + 2;
+    const content = "q 595.28 0 0 841.89 0 0 cm /Im0 Do Q";
+    obj(pid, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 ${iid} 0 R >> >> /Contents ${cid} 0 R >>`);
+    obj(cid, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    offsets[iid] = len;
+    push(`${iid} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`);
+    push(p.jpg);
+    push("\nendstream\nendobj\n");
+  });
+  const total = 3 * n + 3, xrefPos = len;
+  let x = `xref\n0 ${total}\n0000000000 65535 f \n`;
+  for (let id = 1; id < total; id++) x += String(offsets[id]).padStart(10, "0") + " 00000 n \n";
+  push(x + `trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
+  return new Blob(chunks, { type: "application/pdf" });
+}
+async function sharePdf() {
+  if (!totals().count) { alert("Сначала выберите работы."); return; }
+  const btn = document.getElementById("calcPdf");
+  const label = btn ? btn.textContent : "";
+  if (btn) { btn.disabled = true; btn.textContent = "…"; }
+  try {
+    const blob = buildPdf(pdfPages());
+    const file = new File([blob], "smeta-elektromontazh.pdf", { type: "application/pdf" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "Предварительная смета", text: "Предварительная смета на электромонтажные работы" });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }
+  } catch (err) {
+    if (!err || err.name !== "AbortError") { alert("Не удалось создать PDF."); console.error(err); }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+  }
+}
 function initCalculator() {
   const search = document.getElementById("priceSearch");
   if (search) search.addEventListener("input", event => render(event.target.value));
@@ -173,15 +306,7 @@ function initCalculator() {
   } else {
     document.getElementById("calcPrint")?.addEventListener("click", printQuote);
   }
-  document.getElementById("calcCopy")?.addEventListener("click", async () => {
-    if (!totals().count) { alert("Сначала выберите работы."); return; }
-    try {
-      await navigator.clipboard.writeText(buildQuote());
-      alert("Расчёт скопирован.");
-    } catch {
-      prompt("Скопируйте расчёт:", buildQuote());
-    }
-  });
+  document.getElementById("calcPdf")?.addEventListener("click", sharePdf);
   document.getElementById("calcReset")?.addEventListener("click", () => {
     Object.keys(quantities).forEach(key => delete quantities[key]);
     document.querySelectorAll(".qty-input").forEach(input => input.value = "");
