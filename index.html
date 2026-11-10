@@ -13,20 +13,21 @@
 <header class="header" id="top">
   <div class="container header__inner">
     <a class="logo" href="#top">⚡ Электромонтаж <span>Казань</span></a>
-    <nav class="nav">
-      <a href="#services">Услуги</a>
-      <a href="#price">Прайс</a>
-      <a href="#gallery">Фото работ</a>
-      <a href="#contact">Контакты</a>
-    </nav>
-    <a class="header__phone" href="tel:+79520383777">8 (952) 03-83-77-7</a>
+    <a class="header__phone" href="tel:+79520383777" aria-label="Позвонить 8 (952) 03-83-77-7"><span class="phone-icon">📞</span><span class="phone-text">8 (952) 03-83-77-7</span></a>
+    <details class="menu" id="menu">
+      <summary class="menu__btn">☰ Меню</summary>
+      <nav class="menu__list">
+        <a href="#price">Прайс</a>
+        <a href="#gallery">Фото работ</a>
+      </nav>
+    </details>
   </div>
 </header>
 
 <section class="hero">
   <div class="container hero__inner">
     <div class="hero__text">
-      <h1>Электромонтажные работы<br>в Казани под ключ</h1>
+      <h1><span class="h1-line">Электромонтажные работы</span><br>в Казани под ключ</h1>
       <p class="hero__sub">Частный электромонтажник <strong>Усманов Марат Раисович</strong>.<br>
       Замена и монтаж проводки, электрощиты, розетки, освещение, умный дом, видеонаблюдение.</p>
       <div class="hero__badges">
@@ -39,12 +40,15 @@
         <a class="btn" href="#price">Смотреть прайс</a>
       </div>
     </div>
-    <div class="hero__card">
-      <h3>Связаться со мной</h3>
+    <div class="hero__side">
+      <img class="hero__photo" src="hero-photo.jpg" width="1200" height="750" alt="Электромонтажник Усманов Марат на фоне электрощита">
+      <div class="hero__card">
+        <h3>Связаться со мной</h3>
       <p><strong>Усманов Марат Раисович</strong></p>
       <p class="phone">8 (952) 03-83-77-7</p>
       <p>Работаю по Казани и области.<br>Минимальный заказ (выезд) — 2000&nbsp;₽.</p>
       <p class="note">Доплата за выезд за пределы города — 46&nbsp;₽/км.</p>
+    </div>
     </div>
   </div>
 </section>

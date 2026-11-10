@@ -221,7 +221,17 @@ function initGallery() {
     if (event.key === "ArrowRight") show(current + 1);
   });
 }
+function initMenu() {
+  const menu = document.getElementById("menu");
+  if (!menu) return;
+  menu.querySelectorAll("a").forEach(link =>
+    link.addEventListener("click", () => menu.removeAttribute("open")));
+  document.addEventListener("click", event => {
+    if (menu.open && !menu.contains(event.target)) menu.removeAttribute("open");
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   initCalculator();
   initGallery();
+  initMenu();
 });
