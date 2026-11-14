@@ -155,3 +155,17 @@ th,td{border-color:#edf0f2;color:#4f5d68}th{color:#87939d}td.price{color:#9a700d
   .print-sheet td:nth-child(n+3),.print-sheet th:nth-child(n+3){text-align:right}
   .print-sheet td:first-child,.print-sheet th:first-child{width:100%}
 }
+
+/* Фото 17–19: поворот на 90° вправо (по часовой стрелке) */
+.gallery-grid figure.rot img{position:absolute;top:50%;left:50%;width:75%;height:133.333%;
+  transform:translate(-50%,-50%) rotate(90deg)}
+.gallery-grid figure.rot:hover img{transform:translate(-50%,-50%) rotate(90deg) scale(1.06)}
+.lightbox img.rot{max-width:82vh;max-height:92vw;transform:rotate(90deg)}
+.lightbox .lb-count{position:absolute;bottom:12px;margin:0}
+.lightbox .lb-btn{z-index:3}
+
+/* Группа прайса, где выбрано количество, подсвечивается зелёным */
+.price-group.has-qty{border-color:#8fd3a4;box-shadow:0 0 0 1px #8fd3a4}
+.price-group.has-qty h3{background:#e4f6ea;color:#1b6b3a;border-color:#bfe5cc}
+.price-group.has-qty h3:after{color:#1b6b3a}
+.price-group.has-qty .price-group-count{color:#3b8f5c}

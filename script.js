@@ -34,7 +34,7 @@ function render(query = "") {
         item[0].toLocaleLowerCase("ru").includes(q) ||
         group.title.toLocaleLowerCase("ru").includes(q));
     if (!items.length) return;
-    html += `<section class="price-group">
+    html += `<section class="price-group" data-gi="${gi}">
       <h3 tabindex="0" role="button" aria-expanded="${q ? "true" : "false"}">${safe(group.title)} <span class="price-group-count">${items.length} поз.</span></h3>
       <div class="price-table-scroll" ${q ? "" : "hidden"}>
         <table><thead><tr><th>Работа</th><th>Ед. изм.</th><th>Цена</th><th>Кол-во</th></tr></thead><tbody>`;
@@ -116,6 +116,9 @@ function updateCalc() {
   const total = document.getElementById("calcTotal");
   if (count) count.textContent = t.count;
   if (total) total.textContent = (t.hasFrom ? "от " : "") + money(t.sum);
+  const used = new Set(Object.keys(quantities).map(key => key.split("-")[0]));
+  document.querySelectorAll(".price-group").forEach(group =>
+    group.classList.toggle("has-qty", used.has(group.dataset.gi)));
 }
 function makePrintSheet() {
   let sheet = document.getElementById("printSheet");
@@ -149,7 +152,42 @@ function printQuote() {
 }
 
 /* ===== PDF-смета: создаётся прямо в браузере и отправляется через «Поделиться» ===== */
-function pdfPages() {
+// Адрес общего счётчика (Google Apps Script, файл counter.gs). Вставьте сюда ссылку вида
+// https://script.google.com/macros/s/.../exec . Пока пусто — номер хранится только в этом браузере.
+const SMETA_COUNTER_URL = "";
+const SMETA_KEY = "smetaNumber", SMETA_START = 125;
+function nextSmetaNumber() {
+  try {
+    const n = parseInt(localStorage.getItem(SMETA_KEY), 10);
+    return n >= SMETA_START ? n : SMETA_START;
+  } catch { return SMETA_START; }
+}
+function saveSmetaNumber(used) {
+  try { localStorage.setItem(SMETA_KEY, String(used + 1)); } catch {}
+}
+async function reserveSmetaNumber() {
+  if (SMETA_COUNTER_URL) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 4000);
+      const res = await fetch(SMETA_COUNTER_URL + "?action=next&_=" + Date.now(), { signal: ctrl.signal, cache: "no-store" });
+      clearTimeout(timer);
+      const data = await res.json();
+      if (Number.isInteger(data.number)) return data.number;
+    } catch (err) { console.warn("Счётчик недоступен, номер взят из браузера", err); }
+  }
+  const n = nextSmetaNumber();          // запасной вариант: счётчик в браузере
+  saveSmetaNumber(n);
+  return n;
+}
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+function pdfPages(number) {
   const t = totals();
   const W = 1240, H = 1754, M = 90;               // A4, ~150 dpi
   const FONT = '"Segoe UI", Roboto, Arial, sans-serif';
@@ -186,7 +224,7 @@ function pdfPages() {
     y = M + 30;
     if (first) {
       ctx.fillStyle = "#172633"; ctx.font = "bold 46px " + FONT;
-      ctx.fillText("Предварительная смета", M, y); y += 44;
+      ctx.fillText("Предварительная смета № " + number, M, y); y += 44;
       ctx.fillStyle = "#4f5d68"; ctx.font = "26px " + FONT;
       ctx.fillText("Электромонтажные работы · Марат Усманов · " + displayPhone, M, y); y += 36;
       ctx.fillText("Дата: " + new Date().toLocaleDateString("ru-RU"), M, y); y += 56;
@@ -262,20 +300,19 @@ async function sharePdf() {
   const btn = document.getElementById("calcPdf");
   const label = btn ? btn.textContent : "";
   if (btn) { btn.disabled = true; btn.textContent = "…"; }
+  let blob = null, file = null;
   try {
-    const blob = buildPdf(pdfPages());
-    const file = new File([blob], "smeta-elektromontazh.pdf", { type: "application/pdf" });
+    const number = await reserveSmetaNumber();
+    blob = buildPdf(pdfPages(number));
+    file = new File([blob], `smeta-${number}.pdf`, { type: "application/pdf" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: "Предварительная смета", text: "Предварительная смета на электромонтажные работы" });
+      await navigator.share({ files: [file], title: "Смета № " + number, text: "Предварительная смета № " + number + " на электромонтажные работы" });
     } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = file.name;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      downloadBlob(blob, file.name);
     }
   } catch (err) {
-    if (!err || err.name !== "AbortError") { alert("Не удалось создать PDF."); console.error(err); }
+    if (err && err.name === "NotAllowedError" && blob) downloadBlob(blob, file.name);   // браузер не дал открыть «Поделиться»
+    else if (!err || err.name !== "AbortError") { alert("Не удалось создать PDF."); console.error(err); }
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = label; }
   }
@@ -323,6 +360,7 @@ function initGallery() {
   let current = 0;
   function show(index) {
     current = (index + figures.length) % figures.length;
+    image.classList.toggle("rot", figures[current].classList.contains("rot"));
     image.src = figures[current].dataset.full;
     counter.textContent = `${current + 1} / ${figures.length}`;
   }
